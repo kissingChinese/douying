@@ -1,0 +1,76 @@
+{
+  "count": 5,
+  "code": 0,
+  "data": [
+    {
+      "id": 1,
+      "path": null,
+      "href": null,
+      "icon": null,
+      "title": "业务管理",
+      "target": null,
+      "state": 0,
+      "child": null,
+      "isDeleted": 0,
+      "gmtCreate": null,
+      "gmtModifeld": null,
+      "pid": 0
+    },
+    {
+      "id": 2,
+      "path": null,
+      "href": "page/welcome-1.html",
+      "icon": "fa fa-home",
+      "title": "主页",
+      "target": "_self",
+      "state": 0,
+      "child": null,
+      "isDeleted": 0,
+      "gmtCreate": null,
+      "gmtModifeld": null,
+      "pid": 1
+    },
+    {
+      "id": 3,
+      "path": null,
+      "href": null,
+      "icon": "fa fa-file-text",
+      "title": "用户管理",
+      "target": null,
+      "state": 0,
+      "child": null,
+      "isDeleted": 0,
+      "gmtCreate": null,
+      "gmtModifeld": null,
+      "pid": 1
+    },
+    {
+      "id": 4,
+      "path": null,
+      "href": "page/user-table.html",
+      "icon": null,
+      "title": "用户",
+      "target": null,
+      "state": 0,
+      "child": null,
+      "isDeleted": 0,
+      "gmtCreate": null,
+      "gmtModifeld": null,
+      "pid": 3
+    },
+    {
+      "id": 5,
+      "path": null,
+      "href": "page/user-approve-table.html",
+      "icon": null,
+      "title": "待认证用户管理",
+      "target": null,
+      "state": 0,
+      "child": null,
+      "isDeleted": 0,
+      "gmtCreate": null,
+      "gmtModifeld": null,
+      "pid": 3
+    }
+  ]
+}

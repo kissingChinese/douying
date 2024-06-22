@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+
+</head>
+<body>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" class="layui-input" id="topicSearch">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="authorization">授权</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+
+
+
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../lib/layui-v2.7.3/layui/layui.js"></script>
+<script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../api/urlConfig.js"></script>
+<script type="text/javascript">
+
+    function getData(){
+        sessionStorage.setItem('checkChild',"false");
+        var data = [];
+        $.ajax({
+            url: ipURL+"/authorize/role/treeList",    //后台数据请求地址
+            type: "get",
+            async:false,
+            headers:{token:localStorage.token},
+            success: function(resut){
+                data = resut;
+            }
+        });
+        return data;
+    }
+    var tree
+    layui.use(['tree', 'util'], function() {
+        tree = layui.tree
+            , layer = layui.layer
+            , util = layui.util
+
+        //基本演示
+        tree.render({
+            elem: '#test12'
+            , showCheckbox: true  //是否显示复选框
+            ,data: getData()
+            ,showCheckbox: true  //是否显示复选框
+            ,id: 'demoId1'
+            ,click: function(obj){
+                var data = obj.data;  //获取当前点击的节点数据
+
+                var data = tree.getChecked('demoId1')
+                for (let i = 0; i < data.length; i++) {
+                    // layer.msg(data[i].id);
+                }
+            }
+        });
+    })
+
+
+
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            // url: '../api/table.json',
+            url:ipURL+"/authorize/role/list",
+            headers:{token:localStorage.token},
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data,//解析数据列表
+
+                };
+
+            },
+
+            response: {
+                statusCode: 0//规定成功的状态码，默认：0
+            },
+            text:{none: '无数据'},
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                { field: 'id', title: 'ID' ,sort: true},
+                { field: 'name', title: '角色' },
+                { field: 'remark', title: '备注' },
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var topic = $('input[id="topicSearch"]').val()
+            var type = $('input[name="type"]').val()
+            //执行搜索重载
+            table.reload('currentTableId', {
+
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    topic: topic,
+                    type:type
+                }
+            });
+
+            return false;
+        });
+
+        function getRolePermission(id){
+            var data = [];
+            $.ajax({
+                url: ipURL+"/authorize/role/getPermission/"+id,
+                type: "get",
+                async:false,
+                headers:{token:localStorage.token},
+                success: function(resut){
+                    data = resut;
+                }
+            });
+            return data;
+        }
+
+        function getPId(tree){
+
+            list = [];
+            for(var i in tree){
+                var node = tree[i];
+                //结果lsit
+                list.push(
+                    node.id
+                );
+                if (node.children.length !== 0) {  //遍历树的第一层,只有一个根结点
+                    toListDF(node.children, list);  //遍历子树,并加入到list中.
+                }
+
+            }
+            return list;
+        }
+
+        function toListDF (tree, list) {
+            for (var i in tree) { //遍历最上层
+                //将当前树放入list中
+                var node = tree[i];
+                list.push(
+                    node.id
+                );
+                //如果有子结点,再遍历子结点
+                if (node.children.length !== 0) {
+                    toListDF(node.children, list)  //递归
+                }
+            }
+        }
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+
+            if(obj.event === 'add'){
+                $('#save')[0].reset();
+                layer.open({
+                    type: 1,
+                    title: '新增',
+                    area: ['400px','400px'],
+                    content: $('#save'),
+                    btn: ['提交', '退出'],
+                    end:function(){
+                        $('#save').css('display','none')
+                        return false;
+                    },
+                    yes:function(){
+                    },
+                    success:function(layero,index){
+                        layui.use('form',function(){
+
+                            var form=layui.form;
+                            layero.addClass('layui-form');
+                            var submitBtn=layero.find('.layui-layer-btn0');
+                            submitBtn.attr('lay-filter','formVerify').attr('lay-submit','');
+                            layero.keydown(function(e){
+                                if(e.keyCode==13){
+                                    submitBtn.click();
+                                }
+                            });
+
+                            form.on('submit(formVerify)',function(data){
+                                $.ajax({
+                                    url: ipURL + '/authorize/role',
+                                    method: 'post',
+                                    data: JSON.stringify(data.field),
+                                    dataType: 'JSON',
+                                    contentType: 'application/json;charset=UTF-8',
+                                    beforeSend: function (request) {
+                                        request.setRequestHeader("token", localStorage.token);
+                                    },
+                                    success: function (res) {
+                                        layer.msg(res.message);
+                                        layer.close(index);
+                                        layui.table.reload('currentTableId'); //重载父页表格，参数为表格ID
+
+                                    },
+                                    error: function (data) {
+                                        layer.msg(res.message);
+                                    }
+                                });
+
+                                return false;
+                            });
+                        });
+                    }
+
+                })
+
+            }else if(obj.event === 'delete'){
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                var ids = "";
+                for(i=0;i<data.length;i++){
+                    ids+=data[i].id;
+                    ids+=",";
+                }
+                $.ajax({
+                    url: ipURL+'/authorize/role/'+ids,
+                    method: 'delete',
+                    beforeSend: function(request) {
+                        request.setRequestHeader("token", localStorage.token);
+                    },
+                    success: function(res) {
+                        if (res.code == '0') {
+
+                            layer.msg(res.message);
+                            table.reload('currentTableId'); //刷新表格，参数为表格ID
+
+                        } else{
+                            layer.msg(res.message);
+                        }
+
+                    },
+                    error: function(data) {
+                        layer.msg(data.message);
+                    }
+                });
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'authorization'){
+                sessionStorage.setItem('checkChild',"false");// 禁用全选
+                //可以重载所有基础参数
+                tree.reload('demoId1', {
+                });
+                tree.setChecked('demoId1', getRolePermission(data.id)); //批量勾选 id 为 2、3 的节点
+                sessionStorage.setItem('checkChild',"true");//初始化页面完成后恢复全选功能
+                layer.open({
+                    type: 1,
+                    title: '正在给 '+data.name+' 分配权限',
+                    area: ['400px','400px'],
+                    content: $('#authority'),
+                    btn: ['提交', '退出'],
+
+                    end:function(){
+                        $('#authority').css('display','none')
+                    },
+                    yes:function(index, layero){
+                        var RolePermission = {
+                            rid:data.id,
+                            pid:getPId(tree.getChecked('demoId1'))
+                        }
+                        $.ajax({
+                            url: ipURL + '/authorize/role/authority',
+                            method: 'post',
+                            data: JSON.stringify(RolePermission),
+                            dataType: 'JSON',
+                            contentType: 'application/json;charset=UTF-8',
+                            beforeSend: function (request) {
+                                request.setRequestHeader("token", localStorage.token);
+                            },
+                            success: function (res) {
+                                layer.msg(res.message);
+                                layer.close(index);
+                                layui.table.reload('currentTableId'); //重载父页表格，参数为表格ID
+                            },
+                            error: function (data) {
+                                layer.msg(data.message);
+                            }
+                        });
+                    },
+
+
+                })
+
+            } else if(obj.event === 'edit'){
+
+                //给表单赋值
+                form.val("stuform", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                    "id": data.id // "name": "value"
+                    ,"name":data.name
+                    ,"remark": data.remark
+                });
+                layer.open({
+                    type: 1,
+                    title: '修改',
+                    area: ['400px','400px'],
+                    content: $('#save'),
+                    btn: ['提交', '退出'],
+                    end:function(){
+                        $('#save').css('display','none')
+                    },
+                    yes:function(){
+                    },
+
+                    success:function(layero,index){
+
+                        layui.use('form',function(){
+                            var form=layui.form;
+                            layero.addClass('layui-form');
+                            var submitBtn=layero.find('.layui-layer-btn0');
+                            submitBtn.attr('lay-filter','formVerify').attr('lay-submit','');
+                            layero.keydown(function(e){
+                                if(e.keyCode==13){
+                                    submitBtn.click();
+                                }
+                            });
+
+                            form.on('submit(formVerify)',function(data){
+
+                                $.ajax({
+                                    url: ipURL + '/authorize/role',
+                                    method: 'put',
+                                    data: JSON.stringify(data.field),
+                                    dataType: 'JSON',
+                                    contentType: 'application/json;charset=UTF-8',
+                                    beforeSend: function (request) {
+                                        request.setRequestHeader("token", localStorage.token);
+                                    },
+                                    success: function (res) {
+                                        layer.msg(res.message);
+                                        layer.close(index);
+                                        layui.table.reload('currentTableId'); //重载父页表格，参数为表格ID
+                                    },
+                                    error: function (data) {
+                                        layer.msg(data.message);
+                                    }
+                                });
+
+
+                                return false;
+                            });
+                        });
+                    }
+                })
+
+
+            }else if(obj.event === "delete"){
+
+                var id = data.id;
+                layer.confirm('确定删除选定行的数据吗?', function(index){
+                    $.ajax({
+                        url: ipURL + '/authorize/role/'+id,
+                        method: 'delete',
+                        beforeSend: function (request) {
+                            request.setRequestHeader("token", localStorage.token);
+                        },
+                        success: function (res) {
+                            layer.msg(res.message);
+                            layer.close(index);
+                            layui.table.reload('currentTableId'); //重载父页表格，参数为表格ID
+
+                        },
+                        error: function (data) {
+                            layer.msg(res.message);
+                        }
+                    });
+                });
+
+            }
+        });
+
+    })
+
+</script>
+
+
+
+</body>
+
+
+<style type="text/css">
+    .myData .layui-form-item{
+        margin: 20px 100px 10px 45px;
+    }
+    .myData .layui-form-label{
+        width: 80px;
+    }
+</style>
+
+<div id="authority" style="display: none">
+    <input type="hidden" name="id"/>
+    <div id="test12" class="demo-tree-more"></div>
+</div>
+<form class="layui-form myData" action="save" method="post" lay-filter="stuform" id="save" style="display: none">
+    <input type="hidden" name="id"  />
+    <div class="layui-form-item" >
+        <label class="layui-form-label">角色名称: </label>
+        <div class="layui-input-block">
+            <input type="text" name="name"  class="layui-input" />
+        </div>
+    </div>
+    <div class="layui-form-item" >
+        <label class="layui-form-label">备注: </label>
+        <div class="layui-input-block">
+            <input type="text" name="remark"  class="layui-input" />
+        </div>
+    </div>
+
+</form>
+</html>

@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "qiniu.kodo",
+      "type": "com.example.config.QiNiuConfig",
+      "sourceType": "com.example.config.QiNiuConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "qiniu.kodo.access-key",
+      "type": "java.lang.String",
+      "description": "账号",
+      "sourceType": "com.example.config.QiNiuConfig"
+    },
+    {
+      "name": "qiniu.kodo.bucket-name",
+      "type": "java.lang.String",
+      "description": "bucketName",
+      "sourceType": "com.example.config.QiNiuConfig"
+    },
+    {
+      "name": "qiniu.kodo.secret-key",
+      "type": "java.lang.String",
+      "description": "密钥",
+      "sourceType": "com.example.config.QiNiuConfig"
+    }
+  ],
+  "hints": []
+}

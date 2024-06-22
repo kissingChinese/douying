@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+
+        <form class="layui-form" action="" lay-filter="example">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>资源放行白名单</legend>
+                </legend></legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">白名单IP</label>
+                <div class="layui-input-block">
+                    <input id="allowIp" type="text" name="allowIp" autocomplete="off" placeholder="请输入白名单ip,多个用,分割" class="layui-input">
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>热门视频热度(大于该值则显示在热门视频上)</legend>
+                </legend></legend>
+            </fieldset>
+
+
+
+            <input id="id" name="id" lay-verify="required" autocomplete="off" class="layui-input" type="hidden">
+            <input id="successAudit" name="successAudit" lay-verify="required" autocomplete="off" class="layui-input" type="hidden">
+            <input id="manualAudit" name="manualAudit" lay-verify="required" autocomplete="off" class="layui-input" type="hidden">
+            <input id="passAudit" name="passAudit" lay-verify="required" autocomplete="off" class="layui-input" type="hidden">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">热度值</label>
+                <div class="layui-input-inline">
+                    <input id="hotLimit" name="hotLimit" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">审核开关</label>
+                <div class="layui-input-inline">
+                    <input id="auditOpen" name="auditOpen" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>自动审核通过比例</legend>
+                </legend></legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴黄最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="successMinPulp" name="successMinPulp" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴黄最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="successMaxPulp" name="successMaxPulp" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴暴恐最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="successMinterror" name="successMinterror" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴暴恐最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="successMaxterror" name="successMaxterror" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片敏感人物识别最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="successMinpolitician" name="successMinpolitician" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片敏感人物识别最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="successMaxpolitician" name="successMaxpolitician" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>人工审核比例</legend>
+                </legend></legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴黄最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="manualMinPulp" type="tel" name="manualScoreMinPulp" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴黄最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="manualMaxPulp" type="text" name="manualScoreMaxPulp" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴暴恐最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="manualMinTerror" type="text" name="manualScoreMinTerror" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴暴恐最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="manualMaxTerror" type="text" name="manualScoreMaxTerror" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片敏感人物识别最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="manualMinPolitician" type="tel" name="manualScoreMinPolitician" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片敏感人物识别最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="manualMaxPolitician" type="text" name="manualScoreMaxPolitician"
+                               lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>PASS审核比例</legend>
+                </legend></legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴黄最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="passMinPulp" type="tel" name="passMinPulp" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴黄最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="passMaxPulp" type="text" name="passMaxPulp" lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴暴恐最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="passMinTerror" type="tel" name="passMinTerror" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片鉴暴恐最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="passMaxTerror" type="text" name="passMaxTerror" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片敏感人物识别最小值</label>
+                    <div class="layui-input-inline">
+                        <input id="passMinPolitician" type="tel" name="passMinPolitician" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片敏感人物识别最大值</label>
+                    <div class="layui-input-inline">
+                        <input id="passMaxPolitician" type="text" name="passMaxPolitician" lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="save">修改</button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+
+<script src="../api/urlConfig.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+
+
+    $(function () {
+        $.ajax({
+            url: ipURL + '/admin/setting',
+            method: 'get',
+
+
+            beforeSend: function (request) {
+                request.setRequestHeader("token", localStorage.token);
+            },
+            success: function (res) {
+
+                var setting = res.data
+                var settingScoreJson = setting.settingScoreJson
+                var succ = settingScoreJson.successScore
+                var manualScore = settingScoreJson.manualScore
+                var pass = settingScoreJson.passScore
+                //表单初始赋值
+                $("#hotLimit").attr("value", setting.hotLimit);
+                $("#id").attr("value", setting.id);
+                $("#auditOpen").attr("value", setting.auditOpen);
+                $("#allowIp").attr("value", setting.allowIp);
+
+                $("#successAudit").attr("value", succ.auditStatus);
+                $("#manualAudit").attr("value", manualScore.auditStatus);
+                $("#passAudit").attr("value", pass.auditStatus);
+
+
+                $("#successMinPulp").attr("value", succ.minPulp);
+                $("#successMaxPulp").attr("value", succ.maxPulp);
+                $("#successMinterror").attr("value", succ.minTerror);
+                $("#successMaxterror").attr("value", succ.maxTerror);
+                $("#successMinpolitician").attr("value", succ.minPolitician);
+                $("#successMaxpolitician").attr("value", succ.maxPolitician);
+
+                $("#manualMinPulp").attr("value", manualScore.minPulp);
+                $("#manualMaxPulp").attr("value", manualScore.maxPulp);
+                $("#manualMinTerror").attr("value", manualScore.minTerror);
+                $("#manualMaxTerror").attr("value", manualScore.maxTerror);
+                $("#manualMinPolitician").attr("value", manualScore.minPolitician);
+                $("#manualMaxPolitician").attr("value", manualScore.maxPolitician);
+
+                $("#passMinPulp").attr("value", pass.minPulp);
+                $("#passMaxPulp").attr("value", pass.maxPulp);
+                $("#passMinTerror").attr("value", pass.minTerror);
+                $("#passMaxTerror").attr("value", pass.maxTerror);
+                $("#passMinPolitician").attr("value", pass.minPolitician);
+                $("#passMaxPolitician").attr("value", pass.maxPolitician);
+            },
+            error: function (data) {
+                layer.msg(data.message);
+            }
+        });
+    })
+
+
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        //监听提交
+        form.on('submit(save)', function (data) {
+            var d = data.field
+            var successScore = {
+                minPulp :  d.successMinPulp
+                , maxPulp :  d.successMaxPulp
+                , minTerror : d.successMinterror
+                , maxTerror :  d.successMaxterror
+                , minPolitician :  d.successMinpolitician
+                , maxPolitician :  d.successMaxpolitician
+                ,auditStatus : d.successAudit
+            }
+ 
+     
+            var manualScore = {
+                minPulp : d.manualScoreMinPulp
+                , maxPulp : d.manualScoreMaxPulp
+                , minTerror : d.manualScoreMinTerror
+                , maxTerror : d.manualScoreMaxTerror
+                , minPolitician :  d.manualScoreMinPolitician
+                , maxPolitician:  d.manualScoreMaxPolitician
+                ,auditStatus : d.manualAudit
+            }
+
+            var passScore = {
+                minPulp : d.passMinPulp
+                , maxPulp : d.passMaxPulp
+                , minTerror : d.passMinTerror
+                , maxTerror : d.passMaxTerror
+                , minPolitician : d.passMinPolitician
+                , maxPolitician : d.passMaxPolitician
+                ,auditStatus: d.passAudit
+            }
+
+            var auditPolicy = {
+                successScore : successScore,
+                manualScore : manualScore,
+                passScore : passScore
+            }
+            var setting = {
+                id: d.id,
+                auditOpen: d.auditOpen,
+                allowIp: d.allowIp,
+                hotLimit: d.hotLimit,
+                auditPolicy: JSON.stringify(auditPolicy)
+            }
+            $.ajax({
+                url: ipURL + '/admin/setting',
+                method: 'put',
+                dataType: 'JSON',
+                contentType: 'application/json;charset=UTF-8',
+                data:JSON.stringify(setting),
+                beforeSend: function (request) {
+                    request.setRequestHeader("token", localStorage.token);
+                },
+                success: function (res) {
+                },
+                error: function (data) {
+                    layer.msg(data.message);
+                }
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>

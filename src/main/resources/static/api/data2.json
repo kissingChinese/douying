@@ -1,0 +1,29 @@
+[
+    {
+      "id": 1,
+      "name": "zzz",
+      "open": true,
+      "children": [
+        {
+          "id": 2,
+          "name": "1",
+          "open": false,
+          "checked": true
+        },
+        {
+          "id": 3,
+          "name": "2",
+          "open": false,
+          "checked": true
+
+        },
+        {
+          "id": 17,
+          "name": "3z",
+          "open": false,
+          "checked": true
+        }
+      ],
+      "checked": true
+    }
+  ]

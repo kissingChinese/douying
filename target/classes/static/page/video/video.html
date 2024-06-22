@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.7.3/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+
+</head>
+<body>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">YV号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="YV" autocomplete="off" class="layui-input" id="YV">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">视频名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" autocomplete="off" class="layui-input" id="title">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="violations">下架</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="audit">审核</a>
+            <a class="layui-btn layui-btn-normal layui-btn-danger layui-btn-xs data-count-edit" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+
+
+<script src="../../lib/layui-v2.6.3/layui.js"></script>
+<script src="../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+
+<script src="../../api/urlConfig.js"></script>
+<script type="text/javascript">
+
+
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url:ipURL+"/admin/video/page",
+            headers:{token:localStorage.token},
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data,//解析数据列表
+
+                };
+
+            },
+
+            response: {
+                statusCode: 0//规定成功的状态码，默认：0
+            },
+            text:{none: '无数据'},
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                { field: 'id', title: 'ID' ,sort: true,hide:true},
+                { field: 'yv', title: 'YV号' },
+                { field: 'title', title: '名称' },
+                { field: 'auditStateName', title: '审核状态' },
+                { field: 'openName', title: '视频状态' },
+                { field: 'msg', title: '审核消息' },
+                { field: 'typeName', title: '分类' },
+                { field: 'userName', title: '上传者' },
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var YV = $('input[id="YV"]').val()
+            var title = $('input[id="title"]').val()
+            //执行搜索重载
+            table.reload('currentTableId', {
+
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    YV: YV,
+                    title:title
+                }
+            });
+            return false;
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data
+            if(obj.event == 'delete'){
+                layer.confirm('确定删除选定的视频吗?', function(index){
+                    $.ajax({
+                        url: ipURL + '/admin/video/'+data.id,
+                        method: 'delete',
+                        beforeSend: function (request) {
+                            request.setRequestHeader("token", localStorage.token);
+                        },
+                        success: function (res) {
+                            layer.msg(res.message);
+                            layer.close(index);
+                            treeData();
+                        },
+                        error: function (data) {
+                            layer.msg(data.message);
+                        }
+                    });
+                });
+            }else if(obj.event == 'audit'){
+                // 打开窗口，显示审核内容，以及是否放行
+                layer.confirm('确定放行选中的视频吗?', function(index){
+                    $.ajax({
+                        url: ipURL + '/admin/video/audit',
+                        method: 'post',
+                        beforeSend: function (request) {
+                            request.setRequestHeader("token", localStorage.token);
+                        },
+                        success: function (res) {
+                            layer.msg(res.message);
+                            layer.close(index);
+                            treeData();
+                        },
+                        error: function (data) {
+                            layer.msg(data.message);
+                        }
+                    });
+                });
+            }else if(obj.event == 'violations'){
+                // 打开窗口，显示审核内容，以及是否放行
+                layer.confirm('确定下架选中的视频吗?', function(index){
+                    $.ajax({
+                        url: ipURL + '/admin/video/violations/'+data.id,
+                        method: 'post',
+                        beforeSend: function (request) {
+                            request.setRequestHeader("token", localStorage.token);
+                        },
+                        success: function (res) {
+                            layer.msg(res.message);
+                            layer.close(index);
+                            treeData();
+                        },
+                        error: function (data) {
+                            layer.msg(data.message);
+                        }
+                    });
+                });
+            }
+        });
+
+    })
+
+</script>
+
+
+
+</body>
+<style type="text/css">
+    .myData .layui-form-item{
+        margin: 20px 100px 10px 45px;
+    }
+    .myData .layui-form-label{
+        width: 80px;
+    }
+</style>
+
+<form class="layui-form myData" action="save" method="post" lay-filter="stuform" id="audit" style="display: none">
+    <input type="hidden" name="id"  />
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required"  class="layui-input" />
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="isMenu" value="0" title="菜单">
+            <input type="radio" name="isMenu" value="1" title="按钮" checked>
+            <input type="radio" name="isMenu" value="-1" title="目录">
+        </div>
+    </div>
+
+</form>
+
+
+
+</html>

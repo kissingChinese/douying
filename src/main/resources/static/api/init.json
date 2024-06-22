@@ -1,0 +1,140 @@
+{
+  "menuInfo": [
+    {
+      "title": "业务管理",
+      "href": null,
+      "icon": "fa fa-align-justify",
+      "target": null,
+      "child": [
+        {
+          "title": "主页",
+          "href": "page/welcome.html",
+          "icon": "fa fa-home",
+          "target": null,
+          "child": [],
+          "id": 2,
+          "path": "system:main",
+          "isMenu": 0,
+          "pid": 1
+        },
+        {
+          "title": "用户管理",
+          "href": "",
+          "icon": "fa fa-user",
+          "target": null,
+          "child": [
+            {
+              "title": "用户",
+              "href": "page/user-table.html",
+              "icon": "fa fa-user-o",
+              "target": null,
+              "child": [],
+              "id": 4,
+              "path": "",
+              "isMenu": 0,
+              "pid": 3
+            }
+          ],
+          "id": 3,
+          "path": "",
+          "isMenu": -1,
+          "pid": 1
+        }
+      ],
+      "id": 1,
+      "path": null,
+      "isMenu": -1,
+      "pid": 0
+    },
+    {
+      "title": "系统设置",
+      "href": "",
+      "icon": "fa fa-gears",
+      "target": null,
+      "child": [
+        {
+          "title": "系统管理",
+          "href": "",
+          "icon": "fa fa-gears",
+          "target": null,
+          "child": [
+            {
+              "title": "系统设置",
+              "href": "page/setting.html",
+              "icon": "fa fa-gear",
+              "target": null,
+              "child": [],
+              "id": 62,
+              "path": "system:get",
+              "isMenu": 0,
+              "pid": 61
+            }
+          ],
+          "id": 61,
+          "path": "",
+          "isMenu": -1,
+          "pid": 32
+        },
+        {
+          "title": "权限管理",
+          "href": "",
+          "icon": "fa fa-shield",
+          "target": null,
+          "child": [
+            {
+              "title": "权限",
+              "href": "page/permission.html",
+              "icon": "fa fa-shield",
+              "target": null,
+              "child": [],
+              "id": 74,
+              "path": "permission:list",
+              "isMenu": 0,
+              "pid": 73
+            },
+            {
+              "title": "角色管理",
+              "href": "page/role.html",
+              "icon": "fa fa-user-circle",
+              "target": null,
+              "child": [],
+              "id": 80,
+              "path": "role:list",
+              "isMenu": 0,
+              "pid": 73
+            },
+            {
+              "title": "分配角色",
+              "href": "page/user-role.html",
+              "icon": "fa fa-user-o",
+              "target": null,
+              "child": [],
+              "id": 89,
+              "path": "user:listUserAndRole",
+              "isMenu": 0,
+              "pid": 73
+            }
+          ],
+          "id": 73,
+          "path": "",
+          "isMenu": -1,
+          "pid": 32
+        }
+      ],
+      "id": 32,
+      "path": "",
+      "isMenu": -1,
+      "pid": 0
+    }
+  ],
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/welcome.html?t=1",
+    "image": null
+  },
+  "logoInfo": {
+    "title": "后台管理",
+    "href": null,
+    "image": "images/logo.png"
+  }
+}

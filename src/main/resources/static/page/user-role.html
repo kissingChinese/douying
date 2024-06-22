@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+
+</head>
+<body>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">邮箱</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="email" autocomplete="off" class="layui-input" id="emailSearch">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" class="layui-input" id="nameSearch">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="authorization">授权</a>
+        </script>
+    </div>
+</div>
+
+
+<script src="../lib/layui-v2.7.3/layui/layui.js"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+
+<script src="../api/urlConfig.js"></script>
+<script type="text/javascript">
+
+    function getData(){
+        var data = [];
+        $.ajax({
+            url: ipURL+"/authorize/role/initRole",    //后台数据请求地址
+            type: "get",
+            async:false,
+            headers:{token:localStorage.token},
+            success: function(resut){
+                data = resut;
+            }
+        });
+        return data;
+    }
+
+    function getUserRole(uId){
+        var data = [];
+        $.ajax({
+            url: ipURL+"/authorize/role/getUserRole/"+uId,
+            type: "get",
+            async:false,
+            headers:{token:localStorage.token},
+            success: function(resut){
+                data = resut;
+            }
+        });
+        return data;
+    }
+
+    var transfer
+    layui.use('transfer', function(){
+        transfer = layui.transfer;
+
+        //渲染
+        transfer.render({
+            elem: '#test1'  //绑定元素
+            ,title:["角色","已分配角色"]
+
+            ,data: getData()
+            ,id: 'demo1' //定义索引
+        });
+    });
+
+
+
+
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            // url: '../api/table.json',
+            url:ipURL+"/admin/user/page",
+            headers:{token:localStorage.token},
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data,//解析数据列表
+
+                };
+
+            },
+
+            response: {
+                statusCode: 0//规定成功的状态码，默认：0
+            },
+            text:{none: '无数据'},
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                { field: 'id', title: 'ID' ,width:80,sort: true},
+                { field: 'nickName', title: '昵称' },
+                {field: 'roleName', title: '角色',templet: function (d) {
+                        var data = "";
+                        for(var i in d.roleName){
+                            data = data+`<span class="layui-badge">${d.roleName[i]}</span>  `;
+                        }
+                        return data;
+
+                    }},
+
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var email = $('input[id="emailSearch"]').val()
+            var name = $('input[id="nameSearch"]').val()
+            //执行搜索重载
+            table.reload('currentTableId', {
+
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    email: email,
+                    name:name
+                }
+            });
+
+            return false;
+        });
+
+
+
+
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'authorization'){
+                // 初始化用户已拥有的角色
+                transfer.reload("demo1",{
+                    value:getUserRole(data.id)
+                });
+
+                layer.open({
+                    type: 1,
+                    title: '正在给 '+data.name+' 分配角色',
+                    area: ['500px','500px'],
+                    content: $('#authority'),
+                    btn: ['提交', '退出'],
+
+                    end:function(){
+                        $('#authority').css('display','none')
+                    },
+                    yes:function(index, layero){
+
+                        // 用户id
+                        var uId = data.id
+
+                        // 穿梭框右侧数据
+                        var rId = []
+                        var d = transfer.getData('demo1')
+                        for(var i in d){
+                            rId.push(d[i].value)
+                        }
+
+                        var UserRoleVO = {
+                            uid:uId,
+                            rid:rId
+                        }
+                        $.ajax({
+                            url: ipURL + '/authorize/role/assignRole',
+                            method: 'post',
+                            data: JSON.stringify(UserRoleVO),
+                            dataType: 'JSON',
+                            contentType: 'application/json;charset=UTF-8',
+                            beforeSend: function (request) {
+                                request.setRequestHeader("token", localStorage.token);
+                            },
+                            success: function (res) {
+                                layer.msg(res.message);
+                                layer.close(index);
+                                layui.table.reload('currentTableId'); //重载父页表格，参数为表格ID
+                            },
+                            error: function (data) {
+                                layer.msg(data.message);
+                            }
+                        });
+                    },
+
+
+                })
+
+            }
+        });
+
+    })
+
+</script>
+
+
+
+</body>
+
+
+<style type="text/css">
+    .myData .layui-form-item{
+        margin: 20px 100px 10px 45px;
+    }
+    .myData .layui-form-label{
+        width: 80px;
+    }
+</style>
+
+<div id="authority" style="display: none" class="myData">
+    <input type="hidden" name="id"/>
+    <div id="test1"></div>
+</div>
+
+</html>
