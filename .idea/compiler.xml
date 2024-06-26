@@ -7,13 +7,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="douying" />
+        <module name="douying-utils" />
+        <module name="douying-model" />
+        <module name="douying-service" />
+        <module name="douying-common" />
+        <module name="douying-config" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="8">
+      <module name="douying-admin" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="douying" options="-parameters" />
+      <module name="douying" options="" />
+      <module name="douying-admin" options="-parameters" />
+      <module name="douying-common" options="-parameters" />
+      <module name="douying-config" options="-parameters" />
+      <module name="douying-model" options="-parameters" />
+      <module name="douying-service" options="-parameters" />
+      <module name="douying-utils" options="-parameters" />
     </option>
   </component>
 </project>

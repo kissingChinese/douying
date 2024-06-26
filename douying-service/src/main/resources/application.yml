@@ -1,0 +1,57 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DATASOURCE_HOST:123.207.11.32:3306}/${DATASOURCE_NAME:douying}?serverTimezone=GMT%2B8
+    username: ${DATASOURCE_USER:root}
+    password: ${DATASOURCE_PASSWORD:123456}
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: ${MAIL_NAME:2934128626@qq.com}
+    password: ${MAIL_PASSWORD:ksjbrfnatuntdgej}
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  redis:
+    host: ${REDIS_HOST:123.207.11.32}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:123456}
+    timeout: 1000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+qiniu:
+  kodo:
+    access-key: ${QINIU_KODO_ACCESS:FiyONA_XfzULYdJehnYGvjn28weo1ekxWoVlsFrb}
+    secret-key: ${QINIU_KODO_SECRET:dN0masKVKz9YhEdXjO16MNiiUig5eERlagvWe0Hk}
+    bucket-name: ${QINIU_KODO_BUCKET:xiaodouying}
+server:
+  port: ${SERVER_PORT:11111}
+
+xfxh:
+  hostUrl: https://spark-api.xf-yun.com/v3.5/chat
+  domain: generalv2
+  temperature: 0.5
+  maxTokens: 2048
+  maxResponseTime: 30
+  QPS: 2
+  appId: dcebd3d6
+  apiKey: dd2e8b64ed88d8dbeb8526632e0d7dfb
+  apiSecret: ZjI1NmRmMzU2M2FhMTI2OTJlNGQwZDU3
+
+
+
