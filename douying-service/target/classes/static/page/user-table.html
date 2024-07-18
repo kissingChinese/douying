@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.7.3/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+</head>
+
+<body>
+<div class="layuimini-container" id="vue">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="userName" autocomplete="off" class="layui-input" id="userName">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+
+
+    </div>
+</div>
+<script type="text/html" id="sexTpl">
+    <!-- 这里的 checked 的状态只是演示 -->
+
+    <span class="">${d.sex} == true ? '男' : '女'</span>
+</script>
+
+<script src="../lib/layui-v2.7.3/layui/layui.js" charset="utf-8"></script>
+<script src="../js/vue.js"></script>
+<script src="../api/urlConfig.js"></script>
+<script>
+
+
+    layui.use(['table', 'util'], function(){
+        var table = layui.table
+            ,util = layui.util;
+
+        //监听单元格编辑
+        table.on('edit(currentTableId)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+        });
+    });
+
+    layui.use(['form', 'table','upload'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+        table.render({
+            elem: '#currentTableId',
+            // url: '../api/table.json',	
+			url:ipURL+"/admin/user/list",
+            headers:{token:localStorage.token},
+			parseData: function(res){ //res 即为原始返回的数据
+			    return {
+			      "code": res.code, //解析接口状态
+			      "msg": res.message, //解析提示文本
+			      "count": res.count, //解析数据长度
+			      "data": res.data,//解析数据列表
+				  
+			    };	
+				
+			},
+			
+			response: {
+			            statusCode: 0//规定成功的状态码，默认：0
+			        },
+			text:{none: '无数据'},
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', width: 80, title: 'ID', sort: true,hide:true},
+                {field: 'nickName', width: 150, title: '昵称'},
+                {field: 'sex', width: 80, title: '性别',template:"sexTpl"},
+                {field: 'email', width: 150, title: '邮箱'},
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+
+
+
+        
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+			
+			var userName = $('input[name="userName"]').val()
+			var email = $('input[name="email"]').val()
+            //执行搜索重载
+            table.reload('currentTableId', {
+				
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    userName:userName,
+                    email:email
+                }
+            });
+
+            return false;
+        });
+
+
+
+
+  
+
+
+    });
+</script>
+
+</body>
+</html>

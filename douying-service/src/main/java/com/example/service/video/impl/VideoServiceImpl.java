@@ -38,6 +38,8 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
@@ -457,7 +459,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         // 获取今天日期
         final List<Long> hotVideoIds = redisCacheUtil.pipeline(connection -> {
             map.forEach((k, v) -> {
-                connection.sRandMember(k.getBytes(), v);
+                connection.sRandMember(k.getBytes(StandardCharsets.UTF_8),v);
             });
             return null;
         });
@@ -466,18 +468,17 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             return Collections.EMPTY_LIST;
         }
         final ArrayList<Long> videoIds = new ArrayList<>();
-        // 会返回结果有null，做下校验
         for (Object videoId : hotVideoIds) {
             if (!ObjectUtils.isEmpty(videoId)) {
                 videoIds.addAll((List) videoId);
             }
         }
+        //TODO
         if (ObjectUtils.isEmpty(videoIds)){
-           return Collections.EMPTY_LIST;
+            return Collections.EMPTY_LIST;
 
         }
         final Collection<Video> videos = listByIds(videoIds);
-        // 和浏览记录做交集? 不需要做交集，热门视频和兴趣推送不一样
         setUserVoAndUrl(videos);
         return videos;
     }

@@ -20,7 +20,6 @@ import java.io.IOException;
 @RequestMapping("/douying/file")
 public class FileUploadController implements InitializingBean {
 
-
     @Autowired
     FileService fileService;
 
